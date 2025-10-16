@@ -1,20 +1,15 @@
 
-import sys
 
-from PySide6.QtWidgets import QApplication
-from controllers.TodayExchangeRatesController import TodayExchangeRatesController
-
+from core.EventSystem import EventSystem
+from controllers.TodayExchangeRatesController import create_TodayExchangeRatesController_data
 
 def main()->None:
-    app=QApplication(sys.argv)
-    # TodayExchangeRatesController().index()
-    home_controller=TodayExchangeRatesController()
+    event_system=EventSystem()
 
-    home_controller.index()
+    data=create_TodayExchangeRatesController_data()
+    event_system.trigger_event_create_controller("home",data=data)
 
-    home_controller.window.show()
-    # sys.exit(app.exec())
-    app.exec()
+    event_system.run()
 
 
 if __name__ == "__main__":
