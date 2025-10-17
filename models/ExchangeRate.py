@@ -11,5 +11,5 @@ class ExchangeRate:
     currency_from:Currency
     currency_to:Currency
     value:int 
-    amount_of_numbers_after_point:int
+    multiplier:int
     source_of_information:SourceOfInformation
