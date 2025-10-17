@@ -32,14 +32,21 @@ class EventSystem(metaclass=SingletonMeta):
 
         return self._last_index
 
+    
     def trigger_event_delete_controller(self,index:int)->None:
-        pass
+        #Raises KeyError if controller with index not found
+        del self._controllers[index]
+            
+        
 
     def trigger_event_make_controller_active(self,index:int)->None:
-        pass
+        #Raises KeyError if controller with index not found
+        self._controllers[index].make_active()
+        
 
     def trigger_event_make_controller_inactive(self,index:int)->None:
-        pass
+        #Raises KeyError if controller with index not found
+        self._controllers[index].make_inactive()
     
     def trigger_event_stop_application(self,index:int)->None:
         if self._is_running==False:

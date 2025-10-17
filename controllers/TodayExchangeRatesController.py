@@ -1,4 +1,5 @@
 
+from core.Controller import Controller
 from views.TodayExchangeRatesController.TodayExchangeRatesIndexView import TodayExchanegRatesIndexView
 
 
@@ -6,9 +7,10 @@ def create_TodayExchangeRatesController_data()->dict:
     return {}
 
 
-class TodayExchangeRatesController:
+# class TodayExchangeRatesController:
+class TodayExchangeRatesController(Controller):
     def __init__(self,data:dict):
-        self._window=None
+        super().__init__()
         
     def index(self):
         #check if data is the cache
@@ -21,6 +23,3 @@ class TodayExchangeRatesController:
         #   if error
         #       create error page
         self._window=TodayExchanegRatesIndexView()
-
-    def show(self)->None:
-        self._window.show()
