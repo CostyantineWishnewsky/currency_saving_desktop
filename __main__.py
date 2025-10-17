@@ -5,7 +5,8 @@ from controllers.TodayExchangeRatesController import create_TodayExchangeRatesCo
 
 def main()->None:
     event_system=EventSystem()
-
+    event_system.setup()
+    
     data=create_TodayExchangeRatesController_data()
     event_system.trigger_event_create_controller("home",data=data)
 

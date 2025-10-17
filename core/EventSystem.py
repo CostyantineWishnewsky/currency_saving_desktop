@@ -2,10 +2,13 @@
 import sys
 
 from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QPalette
 
 from core.patterns.SingletonMeta import SingletonMeta
+from core.UIData import UIData
 
 from __globals import CACH_REPOSITORY
+
 
 from controllers.TodayExchangeRatesController import TodayExchangeRatesController
 from controllers.ErrorController import ErrorController
@@ -16,6 +19,11 @@ class EventSystem(metaclass=SingletonMeta):
         self._controllers={}
         self._last_index=0
         self._is_running=False
+
+    def setup(self)->None:
+        palette=self._application.palette()
+        ui_data=UIData()
+        ui_data.set_pallete(palette)
 
     def trigger_event_create_controller(self,route:str,data:dict)->int:
         if route == "home":
