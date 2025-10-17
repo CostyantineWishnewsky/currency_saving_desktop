@@ -11,7 +11,5 @@ class ExchangeRate:
     currency_from:Currency
     currency_to:Currency
     value:int 
-    #replace if for multiplier
     amount_of_numbers_after_point:int
     source_of_information:SourceOfInformation
-    #created_at

@@ -5,6 +5,8 @@ from PySide6.QtWidgets import QApplication
 
 from core.patterns.SingletonMeta import SingletonMeta
 
+from __globals import CACH_REPOSITORY
+
 from controllers.TodayExchangeRatesController import TodayExchangeRatesController
 from controllers.ErrorController import ErrorController
 
@@ -17,7 +19,7 @@ class EventSystem(metaclass=SingletonMeta):
 
     def trigger_event_create_controller(self,route:str,data:dict)->int:
         if route == "home":
-            controller=TodayExchangeRatesController(data)
+            controller=TodayExchangeRatesController(data,CACH_REPOSITORY)
             controller.index()
         elif route == 'error':
             controller=ErrorController(data)

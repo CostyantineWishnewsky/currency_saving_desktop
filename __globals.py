@@ -1,5 +1,5 @@
 
 
-# from support.CacheRepositories.JsonCacheRepository import JsonCacheRepository
+from core.CacheRepositories.JsonCacheRepository import JsonCacheRepository
 
-# CACH_REPOSITORY=JsonCacheRepository(path="./database.json")
+CACH_REPOSITORY=JsonCacheRepository(path="./data.json")
