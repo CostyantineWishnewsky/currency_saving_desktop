@@ -27,10 +27,30 @@ class TodayExchanegRatesIndexView(QWidget):
         content = QWidget()
         content_layout = QVBoxLayout(content)
 
-        #Here should be adding exchange_rates
-        for i in range(10):
-            label = QLabel(f"Label #{i+1}")
-            content_layout.addWidget(label)
+        counter=0
+        line_wrapper=QWidget()
+        line=QHBoxLayout(line_wrapper)
+        for i in range(len(self._exchange_rates)):
+            card_wrapper=QWidget()
+            card=QVBoxLayout(card_wrapper)
+            #Here should be styling
+            currencies_label=QLabel(f"{self._exchange_rates[i].currency_from.name}/{self._exchange_rates[i].currency_from.name}")
+            value_label=QLabel(f"{self._exchange_rates[i].value/self._exchange_rates[i].multiplier}")
+            source_of_information_label=QLabel(f"{self._exchange_rates[i].source_of_information.name}")
+
+            card.addWidget(currencies_label)
+            card.addWidget(value_label)
+            card.addWidget(source_of_information_label)
+
+            line.addWidget(card_wrapper)
+            if counter==2:
+                # content_layout.addWidget(card_wrapper)
+                content_layout.addWidget(line_wrapper)
+                counter=0
+                line_wrapper=QWidget()
+                line=QHBoxLayout(line_wrapper)
+                continue
+            counter+=1
 
         # Add content into scroll area
         scroll.setWidget(content)

@@ -26,4 +26,6 @@ class TodayExchangeRatesController(Controller):
         #   if error
         #       create error page
         #Here should be api
-        self._window=TodayExchanegRatesIndexView([])
+        # self._window=TodayExchanegRatesIndexView([])
+        exchange_rates=self._cache_repository.get_all_exchange_rates()
+        self._window=TodayExchanegRatesIndexView(exchange_rates)
