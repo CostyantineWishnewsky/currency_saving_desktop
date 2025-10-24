@@ -34,8 +34,8 @@ class TodayExchanegRatesIndexView(QWidget):
             card_wrapper=QWidget()
             card=QVBoxLayout(card_wrapper)
             #Here should be styling
-            currencies_label=QLabel(f"{self._exchange_rates[i].currency_from.name}/{self._exchange_rates[i].currency_from.name}")
-            value_label=QLabel(f"{self._exchange_rates[i].value/self._exchange_rates[i].multiplier}")
+            currencies_label=QLabel(f"{self._exchange_rates[i].currency_from.name}->{self._exchange_rates[i].currency_to.name}")
+            value_label=QLabel(f"{self._exchange_rates[i].value}")
             source_of_information_label=QLabel(f"{self._exchange_rates[i].source_of_information.name}")
 
             card.addWidget(currencies_label)
@@ -63,7 +63,7 @@ class TodayExchanegRatesIndexView(QWidget):
         footer_wrapper.setFixedHeight(48)
 
         footer=QHBoxLayout(footer_wrapper)
-        footer.addWidget(QLabel("Footer"),alignment=Qt.AlignHCenter)
+        footer.addWidget(QLabel("Author:Costyantine Wishnewsky"),alignment=Qt.AlignHCenter)
         
         
         layout.addWidget(main_wrapper)

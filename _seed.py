@@ -27,7 +27,7 @@ def seed():
             if currency_name == currency.name:
                 continue
             for source_of_information in sources_of_information.values():
-                exchange_rate=ExchangeRate(id=id_counter,currency_from=currencies[currency_name],currency_to=currency,value=12,multiplier=10,source_of_information=source_of_information)
+                exchange_rate=ExchangeRate(id=id_counter,currency_from=currencies[currency_name],currency_to=currency,value=12,source_of_information=source_of_information)
                 exchange_rates.append(exchange_rate)
                 id_counter+=1
                 
