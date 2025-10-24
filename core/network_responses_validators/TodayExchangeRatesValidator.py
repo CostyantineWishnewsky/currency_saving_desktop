@@ -59,11 +59,10 @@ class TodayExchangeRatesValidator:
             if date_item["currency_to"] not in currencies.keys():
                 currencies[date_item["currency_to"]]=Currency(id=self._currency_id,name=date_item["currency_to"])
                 self._currency_id=self._currency_id+1
-            #checking value  
+            #TODO make checking if it can be converted into Decimal
             value=Decimal(date_item["value"])
 
 
-            #checking source of information
             if date_item["source"] not in sources_of_information:
                 sources_of_information[date_item["source"]]=SourceOfInformation(id=0,name=date_item["source"])
             

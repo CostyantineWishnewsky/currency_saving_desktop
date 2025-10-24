@@ -1,12 +1,14 @@
 
 from PySide6.QtWidgets import QWidget,QVBoxLayout,QHBoxLayout,QLabel
 from PySide6.QtWidgets import QScrollArea
-
 from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QScreen
 
 from core.UIData import UIData
 
 from models.ExchangeRate import ExchangeRate
+
 
 
 class TodayExchanegRatesIndexView(QWidget):
@@ -14,7 +16,10 @@ class TodayExchanegRatesIndexView(QWidget):
         super().__init__()
         self._exchange_rates=exchange_rates
 
+
+
         ui_data=UIData()
+        logo=ui_data.load_svg_icon('logo')
 
         layout = QVBoxLayout()
 
@@ -73,5 +78,12 @@ class TodayExchanegRatesIndexView(QWidget):
         self.setLayout(layout)
 
         window_width,window_height=ui_data.get_usuall_window_sizes()
+
+        self.setWindowIcon(logo)
         self.setFixedSize(window_width,window_height)
         self.setWindowTitle(" ")
+
+        center = QScreen.availableGeometry(QApplication.primaryScreen()).center()
+        geo = self.frameGeometry()
+        geo.moveCenter(center)
+        self.move(geo.topLeft())

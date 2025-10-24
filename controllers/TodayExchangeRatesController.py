@@ -2,6 +2,7 @@
 from core.Controller import Controller
 
 from views.TodayExchangeRatesController.TodayExchangeRatesIndexView import TodayExchanegRatesIndexView
+from views.statuses.ErrorView import ErrorView
 
 def create_TodayExchangeRatesController_data()->dict:
     return {}
@@ -33,8 +34,8 @@ class TodayExchangeRatesController(Controller):
             self._window=TodayExchanegRatesIndexView(exchange_rates)
         except ConnectionRefusedError as e:
             # print("Connection refused.")
-            print(e)
-            exit(1)
+            self._window=ErrorView(error_message=e)
+
         #TODO handle Not Found
         #TODO handle Invalid Request
         #TODO handle Server Not Found

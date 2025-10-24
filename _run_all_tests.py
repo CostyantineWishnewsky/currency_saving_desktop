@@ -1,8 +1,6 @@
 
 import unittest
 
-# from tests.test
-
 
 def load_tests():
     suite=unittest.TestSuite()

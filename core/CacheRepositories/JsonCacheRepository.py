@@ -34,20 +34,15 @@ class JsonCacheRepository(CacheRepository):
     def setup(self)->None:
         try:
             database=self._db_schema
-            # database["header"]["updated"]["exchange_rates"]=date.today().strftime(DAY_TIME_FORMAT)
             database["header"]["updated"]["exchange_rates"]=(date.today()-timedelta(days=1)).strftime(DAY_TIME_FORMAT)
             with open(self._path,'w') as f:
                 json.dump(database, f)
-                # json.dumps(database, f)
         except Exception as e:
-            #TODO here
-            print(e)
+            #TODO make handling better
             pass
     
     def is_setupped(self)->bool:
-        #TODO make openning with cheking structure
-        # return os.path.isfile(self._path)
-        # print(self._path)
+        #TODO make openning with cheking structure is it like db.schema
         return os.path.exists(self._path)
         
 
@@ -73,7 +68,6 @@ class JsonCacheRepository(CacheRepository):
             currency_to=Currency(id=int(item["currency_to"]["id"]),name=item["currency_to"]["name"])
             source_of_information=SourceOfInformation(id=int(item["source_of_information"]["id"]),name=item["source_of_information"]["name"])
 
-            # exchange_rate=ExchangeRate(id=item["id"],currency_from=currency_from,currency_to=currency_to,value=item["value"],multiplier=item["multiplier"],source_of_information=source_of_information)
             exchange_rate=ExchangeRate(id=item["id"],currency_from=currency_from,currency_to=currency_to,value=Decimal(item["value"]),source_of_information=source_of_information)
             exchange_rates.append(exchange_rate)
         return exchange_rates
@@ -85,9 +79,7 @@ class JsonCacheRepository(CacheRepository):
             data=json.load(f)
         exchange_rates=data["data"]["exchange_rates"]
 
-        #Inserting into exchange_rates
         for exchange_rate in updated_exchange_rates:
-            # exchange_rate_dict={'id':exchange_rate.id,'currency_from':{'id':exchange_rate.currency_from.id,'name':exchange_rate.currency_from.name},'currency_to':{'id':exchange_rate.currency_to.id,'name':exchange_rate.currency_to.name},'value':exchange_rate.value,'multiplier':exchange_rate.multiplier,'source_of_information':{'id':exchange_rate.source_of_information.id,'name':exchange_rate.source_of_information.name}}
             exchange_rate_dict={'id':exchange_rate.id,'currency_from':{'id':exchange_rate.currency_from.id,'name':exchange_rate.currency_from.name},'currency_to':{'id':exchange_rate.currency_to.id,'name':exchange_rate.currency_to.name},'value':str(exchange_rate.value),'source_of_information':{'id':exchange_rate.source_of_information.id,'name':exchange_rate.source_of_information.name}}
             exchange_rates[str(exchange_rate_dict['id'])]=exchange_rate_dict
 
@@ -95,7 +87,6 @@ class JsonCacheRepository(CacheRepository):
         data["header"]["updated"]["exchange_rates"] = today_date
         data["data"]["exchange_rates"]=exchange_rates
         with open(self._path,'w') as f:
-            # json.dump(data,f)
             json.dump(data,f)
         
         

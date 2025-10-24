@@ -23,7 +23,6 @@ class EventSystem(metaclass=SingletonMeta):
 
     def trigger_event_create_controller(self,route:str,data:dict)->int:
         if route == "home":
-            # controller=TodayExchangeRatesController(data,CACH_REPOSITORY)
             controller=TodayExchangeRatesController(data)
             controller.index()
         elif route == 'error':
@@ -41,18 +40,18 @@ class EventSystem(metaclass=SingletonMeta):
 
     
     def trigger_event_delete_controller(self,index:int)->None:
-        #Raises KeyError if controller with index not found
+        #TODO Raises KeyError if controller with index not found
         del self._controllers[index]
             
         
 
     def trigger_event_make_controller_active(self,index:int)->None:
-        #Raises KeyError if controller with index not found
+        #TODO Raises KeyError if controller with index not found
         self._controllers[index].make_active()
         
 
     def trigger_event_make_controller_inactive(self,index:int)->None:
-        #Raises KeyError if controller with index not found
+        #TODO Raises KeyError if controller with index not found
         self._controllers[index].make_inactive()
     
     def trigger_event_stop_application(self,index:int)->None:

@@ -33,12 +33,7 @@ class HttpApiRepository(ApiRepository):
         connection.request("POST", url=url,body=json_request_data,headers=self._headers)
         #TODO check if got response if not raise error
         response = connection.getresponse()
-        # print(response.status, response.reason)
-        # print(response.read())
-
-        
-
-        validator=TodayExchangeRatesValidator(response.read().decode('utf-8'))
-        # validator=TodayExchangeRatesValidator(response.read())
+    
+        validator=TodayExchangeRatesValidator(response.read().decode('utf-8')))
         connection.close()
         return validator.get_validated()
