@@ -34,6 +34,6 @@ class HttpApiRepository(ApiRepository):
         #TODO check if got response if not raise error
         response = connection.getresponse()
     
-        validator=TodayExchangeRatesValidator(response.read().decode('utf-8')))
+        validator=TodayExchangeRatesValidator(response.read().decode('utf-8'))
         connection.close()
         return validator.get_validated()

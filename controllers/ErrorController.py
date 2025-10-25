@@ -9,8 +9,9 @@ class ErrorController(Controller):
     def __init__(self,data:dict):
         super().__init__()
         self._error_message=data['error_message']
-    def index(self):
         self._window=ErrorView(error_message=self._error_message)
+    # def index(self):
+    #     self._window=ErrorView(error_message=self._error_message)
         
     def set_error_message(self,error_message:str)->None:
         self._error_message=error_message

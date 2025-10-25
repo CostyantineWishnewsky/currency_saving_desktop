@@ -1,6 +1,9 @@
 
 from core.Controller import Controller
 
+from core.EventObserver import EventObserver
+
+
 from views.TodayExchangeRatesController.TodayExchangeRatesIndexView import TodayExchanegRatesIndexView
 from views.statuses.ErrorView import ErrorView
 
@@ -11,6 +14,9 @@ def create_TodayExchangeRatesController_data()->dict:
 class TodayExchangeRatesController(Controller):
     def __init__(self,data:dict):
         super().__init__()
+        #TODO make it better later
+        exchange_rates=self._cache_repository.get_all_exchange_rates()
+        self._window=TodayExchanegRatesIndexView(exchange_rates)
 
     def index(self):
         try:
