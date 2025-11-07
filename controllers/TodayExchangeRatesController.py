@@ -2,21 +2,17 @@
 from core.Controller import Controller
 
 from core.EventObserver import EventObserver
-
+from core.Events.ControllerCreator.GotErrorEvent import GotErrorEvent
 
 from views.TodayExchangeRatesController.TodayExchangeRatesIndexView import TodayExchanegRatesIndexView
-from views.statuses.ErrorView import ErrorView
 
-def create_TodayExchangeRatesController_data()->dict:
-    return {}
+def create_TodayExchangeRatesController_data(id:int)->dict:
+    return {'id':id}
 
 
 class TodayExchangeRatesController(Controller):
     def __init__(self,data:dict):
-        super().__init__()
-        #TODO make it better later
-        exchange_rates=self._cache_repository.get_all_exchange_rates()
-        self._window=TodayExchanegRatesIndexView(exchange_rates)
+        super().__init__(data['id'])
 
     def index(self):
         try:
@@ -28,22 +24,11 @@ class TodayExchangeRatesController(Controller):
                 return
             exchange_rates=self._api_repository.get_today_exchange_rates()
             self._cache_repository.update_exchange_rates(exchange_rates)
-            #if no
-            #   send request to the api
-            #   if return success message
-            #       create view with this data
-            #   if error
-            #       create error page
-            #Here should be api
-            # self._window=TodayExchanegRatesIndexView([])
-            # exchange_rates=self._cache_repository.get_all_exchange_rates()
             self._window=TodayExchanegRatesIndexView(exchange_rates)
-        except ConnectionRefusedError as e:
-            # print("Connection refused.")
-            self._window=ErrorView(error_message=e)
+        except Exception as e:
+            event_observer=EventObserver()
 
-        #TODO handle Not Found
-        #TODO handle Invalid Request
-        #TODO handle Server Not Found
-        #TODO handle Server Forbidden
-        #TODO handle other Exception
+            error_handling_id=event_observer.get_id_by_name('error_handling')
+
+            event_observer.notify(GotErrorEvent(error_handling_id,e))
+            return

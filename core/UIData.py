@@ -43,7 +43,6 @@ class UIData(metaclass=SingletonMeta):
         if name not in self._icon_pathes.keys():
             raise Exception(f"Icon with name {name} does not exists in icons")
         
-        #TODO make raising if cannot load icon
         path=self._icon_pathes[name]
         svg_renderer = QtSvg.QSvgRenderer(path)
         image = QtGui.QImage(64, 64, QtGui.QImage.Format_ARGB32)

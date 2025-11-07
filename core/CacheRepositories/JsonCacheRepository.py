@@ -5,6 +5,8 @@ import os
 from decimal import Decimal
 
 from core.CacheRepository import CacheRepository
+from core.EventObserver import EventObserver
+from core.Events.ControllerCreator.GotErrorEvent import GotErrorEvent
 
 from models.ExchangeRate import ExchangeRate
 from models.SourceOfInformation import SourceOfInformation
@@ -38,11 +40,14 @@ class JsonCacheRepository(CacheRepository):
             with open(self._path,'w') as f:
                 json.dump(database, f)
         except Exception as e:
-            #TODO make handling better
-            pass
+            event_observer=EventObserver()
+            error_handling_id=event_observer.get_id_by_name('error_handling')
+            event_observer.notify(GotErrorEvent(id=error_handling_id,error_message=e))
+            return
     
     def is_setupped(self)->bool:
-        #TODO make openning with cheking structure is it like db.schema
+        with open(self,self._path,'r') as f:
+            data=json.load(f)
         return os.path.exists(self._path)
         
 

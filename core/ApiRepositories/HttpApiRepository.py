@@ -5,6 +5,9 @@ import json
 from core.ApiRepository import ApiRepository
 from core.network_responses_validators.TodayExchangeRatesValidator import TodayExchangeRatesValidator
 
+from core.EventObserver import EventObserver
+from core.Events.ControllerCreator.GotErrorEvent import GotErrorEvent
+
 from models.ExchangeRate import ExchangeRate
 
 class HttpApiRepository(ApiRepository):
@@ -21,19 +24,25 @@ class HttpApiRepository(ApiRepository):
         ]
     
     def get_today_exchange_rates(self)->list[ExchangeRate]:
-        url="/api/v1/currency-info/today/"
-        request_data={
-            "sources":self._default_sources
-        }
+        try:
+            url="/api/v1/currency-info/today/"
+            request_data={
+                "sources":self._default_sources
+            }
 
-        json_request_data = json.dumps(request_data)
-        connection=HTTPConnection(self._host,self._port)
+            json_request_data = json.dumps(request_data)
+            connection=HTTPConnection(self._host,self._port)
 
-        #TODO check if connection is established
-        connection.request("POST", url=url,body=json_request_data,headers=self._headers)
-        #TODO check if got response if not raise error
-        response = connection.getresponse()
-    
-        validator=TodayExchangeRatesValidator(response.read().decode('utf-8'))
-        connection.close()
-        return validator.get_validated()
+            #TODO check if connection is established
+            connection.request("POST", url=url,body=json_request_data,headers=self._headers)
+            #TODO check if got response if not raise error
+            response = connection.getresponse()
+        
+            validator=TodayExchangeRatesValidator(response.read().decode('utf-8'))
+            connection.close()
+            return validator.get_validated()
+        except Exception as e:
+            event_observer=EventObserver()
+            error_handling_id=event_observer.get_id_by_name('error_handling')
+            event_observer.notify(GotErrorEvent(id=error_handling_id))
+            return

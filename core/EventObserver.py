@@ -6,18 +6,16 @@ from PySide6.QtWidgets import QApplication
 from core.patterns.SingletonMeta import SingletonMeta
 from core.UIData import UIData
 
-# from core.ControllersCreator import ControllersCreator
-# from __globals import CONTROLLERS_CREATOR
 
-# from controllers.TodayExchangeRatesController import TodayExchangeRatesController
-# from controllers.ErrorController import ErrorController
+from core.Events.EventObserver.RegisterNewItemEvent import RegisterNewItemEvent
+
 
 class EventObserver(metaclass=SingletonMeta):
     def __init__(self):
         self._application=QApplication(sys.argv)
         self._event_subscribers={}
-        # self._controllers={}
-        # self._last_index=0
+        self._names_ids={}
+        self._last_event_id=1
         self._is_running=False
 
     def setup(self)->None:
@@ -25,81 +23,61 @@ class EventObserver(metaclass=SingletonMeta):
         ui_data=UIData()
         ui_data.set_pallete(palette)
 
-        # self.subscribe('create_home_controller',CONTROLLERS_CREATOR)
-
     def notify(self,event)->None:
-        print('here should be notification')
         if type(event) in self._event_subscribers.keys():
-            for subscriber in self._event_subscribers[type(event)]:
-                subscriber.handle_event(event)
-            # self._event_subscribers[type(event)].handle_event(event)
+            self._event_subscribers[type(event)][event.id].handle_event(event)
             return
-        #TODO here should be raise
+        raise Exception(f"{event} with type{type (event)} is not in events list")
         
-        pass
 
     def subscribe(self,event_type,event_subscriber)->None:
+        event_subscriber_id=event_subscriber.get_event_subscribtion_id()
+        if event_subscriber_id == None:
+            raise Exception("event_subscriber_id is None")
+        if event_subscriber_id == int:
+            raise Exception("event_subscriber_id should be of type int")
+
+
         if event_type not in self._event_subscribers.keys():
-            self._event_subscribers[event_type]=[event_subscriber]
+            self._event_subscribers[event_type]={event_subscriber_id:event_subscriber}
+
             return
-        self._event_subscribers[event_type].append(event_subscriber)
+        self._event_subscribers[event_type][event_subscriber_id]=event_subscriber
 
     def unsubscribe(self,event_type,event_subscriber)->None:
         if event_type not in self._event_subscribers.keys():
             raise Exception(f"There is no subsribtion of {event_subscriber} on {event_type} event")
-        # for subscriber in self._event_subscribers[event]:
-        #     if subscriber == event_subscriber
-        for i in range(len(self._event_subscribers[event_type])):
-            if self._event_subscribers[event_type][i] == event_subscriber:
-                del self._event_subscribers[event_type][i]
-                return
-        raise Exception(f"There is no subsribtion of {event_subscriber} on {event_type} event")
+        event_subscriber_id=event_subscriber.get_event_subscribtion_id()
+        if event_subscriber_id not in self._event_subscribers[event_type].keys():
+            raise Exception(f"There is no subscriber with id {event_subscriber_id} for {event_type}")
+        self._event_subscribers[event_type][event_subscriber_id]=event_subscriber
         
-    # def trigger_event_create_controller(self,route:str,data:dict)->int:
-    #     if route == "home":
-    #         controller=TodayExchangeRatesController(data)
-    #         controller.index()
-    #     elif route == 'error':
-    #         controller=ErrorController(data)
-    #         controller.index()
-    #     else:
-    #         raise Exception(f"No such route as {route}")
+        if event_type not in self._event_subscribers.keys():
 
-    #     new_index=self._last_index+1
-    #     self._controllers[new_index]=controller
-
-    #     self._last_index=new_index
-
-    #     return self._last_index
-
+            raise Exception("unhandled event")
+        if event_subscriber_id not in self._event_subscribers[event_type].keys():
+            raise Exception(f"There is no subscriber with id {event_subscriber_id} for {event_type}")
+        del self._event_subscribers[event_type][event_subscriber_id]
+        
+    def get_last_event_subscriber_id(self)->int:
+        prev_subscriber_id=self._last_event_id
+        self._last_event_id=self._last_event_id+1
+        return prev_subscriber_id
     
-    # def trigger_event_delete_controller(self,index:int)->None:
-    #     #TODO Raises KeyError if controller with index not found
-    #     del self._controllers[index]
-            
-        
+    def add_subscriber_name(self,name:str,subscriber)->bool:
+        if name in self._names_ids.keys():
+            return False
+        self._names_ids[name]=subscriber
 
-    # def trigger_event_make_controller_active(self,index:int)->None:
-    #     #TODO Raises KeyError if controller with index not found
-    #     self._controllers[index].make_active()
-        
+        return True
 
-    # def trigger_event_make_controller_inactive(self,index:int)->None:
-    #     #TODO Raises KeyError if controller with index not found
-    #     self._controllers[index].make_inactive()
-    
-    # def trigger_event_stop_application(self,index:int)->None:
-    #     if self._is_running==False:
-    #         raise("Cannot stop not running application")
-    #     self._app.quit()
+    def get_id_by_name(self,name:str)->int:
+        if name in self._names_ids.keys():
+            return self._names_ids[name].get_event_subscribtion_id()
+        raise Exception(f"There is no item with name {name}")
 
     def run(self)->None:
         if self._is_running==True:
             raise Exception("Cannot run application twice")
-        
-        # self._event_subscribers['home_controller']
-        # for controller in self._controllers.values():
-        #     controller.show()
-        
         self._is_running=True
         self._application.exec()

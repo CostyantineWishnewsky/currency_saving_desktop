@@ -1,40 +1,61 @@
 
+from abc import ABC,abstractmethod
+
 from __globals import CACH_REPOSITORY,API_REPOSITORY
 from core.EventObserver import EventObserver
-from core.Events.ControllerShowViewEvent import ControllerShowViewEvent
+from core.Events.Controller.ControllerShowViewEvent import ControllerShowViewEvent
+from core.Events.Controller.RunControllerEvent import RunControllerEvent
+from core.Events.Controller.MakeControllerInactiveEvent import MakeControllerInactiveEvent
+from core.Events.Controller.MakeControllerActiveEvent import MakeControllerActiveEvent
 
-# from core.IEventObserverSubscriable import IEventObserverSubscriable
-
-# class Controller(object):
-# class Controller(object,IEventObserverSubscriable):
-class Controller(object):
-    def __init__(self):
+class Controller(ABC):
+    def __init__(self,id:int):
+        self._id=id
         self._window=None
         self._cache_repository=CACH_REPOSITORY
         self._api_repository=API_REPOSITORY
-        self._event_observer=EventObserver()
         self.__is_active=True
+
+    def __del__(self):
+        event_observer=EventObserver()
+
+        event_observer.unsubscribe(ControllerShowViewEvent,self)
+        event_observer.unsubscribe(MakeControllerActiveEvent,self)
+        event_observer.unsubscribe(MakeControllerInactiveEvent,self)
+        event_observer.unsubscribe(RunControllerEvent,self)
+
+    def get_event_subscribtion_id(self)->int:
+        return self._id
 
     def handle_event(self,event)->None:
-        print('Dot event shouwing view')
-        if type(event)==ControllerShowViewEvent:
-            #TODO here
+        if isinstance(event,RunControllerEvent):
+            self.index()
+            event_observer=EventObserver()
+
+            event_observer.notify(ControllerShowViewEvent(self._id))
+            return
+        elif isinstance(event,ControllerShowViewEvent):
+            if self._window == None:
+                return
             self._window.show()
-            pass
-        #handle make it active
-        #handle make it inactive
-        #handle show event
+            return
+        elif isinstance(event,MakeControllerInactiveEvent):
+            self.__is_active=False
+            if self._window == None:
+                return
+            self._window.setEnabled(False)
+            return
+        elif isinstance(event,MakeControllerActiveEvent):
+            self.__is_active=True
+            if self._window == None:
+                return
+            self._window.setEnabled(True)
+            return
+        raise Exception(f"Unhandled Event {event}")
 
-
+    @abstractmethod
+    def index(self):
         pass
 
-    def make_active(self)->None:
-        self.__is_active=True
-        self._window.setEnabled(True)
-
-    def make_inactive(self)->None:
-        self.__is_active=False
-        self._window.setEnabled(False)
-
-    def show(self)->None:
-        self._window.show()
+    def get_event_subscribtion_id(self)->int:
+        return self._id
